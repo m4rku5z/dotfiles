@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -87,11 +87,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -107,11 +107,17 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-#
+
 export PATH="$HOME/.local/bin:$PATH"
+
+#Mason
+export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 
 # Use the Homebrew LLVM instead of Apple's default
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
+# Go path
+export PATH=$PATH:/Users/marcusphan/go/bin
 
 # Help compilers find the LLVM libraries and headers
 export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
@@ -148,4 +154,23 @@ alias fdn="fd --type d"
 # fzf
 source <(fzf --zsh)
 
-#test git
+# starship
+eval "$(starship init zsh)"
+
+# Makefile global
+alias make="make -f $HOME/.makeflags -f Makefile 2>/dev/null || make -f $HOME/.makeflags"
+
+# Custom completion for jg lc-cpp
+_jg_lc_cpp_completion() {
+    local words
+    # Check if we are completing the second argument for 'lc-cpp'
+    if [[ $words[2] == "lc-cpp" ]]; then
+        # Find all .cpp files, strip the path and extension, and suggest them
+        compadd $(basename -a -s .cpp *.cpp 2>/dev/null)
+    fi
+}
+
+# Tell Zsh to use this completion when typing the 'jg' command
+compdef _jg_lc_cpp_completion jg
+# Just instead of Make
+alias jg="just --justfile ~/.user.justfile --working-directory ."

@@ -1,20 +1,21 @@
 --Load core files in from-kickstart folder
-require('from-kickstart.options')
-require('from-kickstart.keymaps')
-require('from-kickstart.plugin-manager')
-require('from-kickstart.ui-and-core-ux-plugins')
-require('from-kickstart.search-and-nav')
-require('from-kickstart.lsp-config')
-require('from-kickstart.formatter')
-require('from-kickstart.autocomplete')
-require('from-kickstart.treesitter')
+require("from-kickstart.options")
+require("from-kickstart.keymaps")
+require("from-kickstart.plugin-manager")
+require("from-kickstart.ui-and-core-ux-plugins")
+require("from-kickstart.search-and-nav")
+require("from-kickstart.lsp-config")
+require("from-kickstart.formatter")
+require("from-kickstart.autocomplete")
+require("from-kickstart.treesitter")
 
-require('from-kickstart.neo-tree')
-require('from-kickstart.indent-line')
-require('from-kickstart.autopairs')
-require('from-kickstart.gitsigns')
+require("from-kickstart.neo-tree")
+require("from-kickstart.indent-line")
+require("from-kickstart.autopairs")
+require("from-kickstart.gitsigns")
+require("from-kickstart.lint")
 
-require('plugins.lazygit')
+require("plugins.lazygit")
 --[[
 
 =====================================================================
