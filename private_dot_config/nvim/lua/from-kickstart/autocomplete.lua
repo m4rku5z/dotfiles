@@ -15,8 +15,8 @@ require("luasnip").setup({})
 --    See the README about individual language/framework/plugin snippets:
 --    https://github.com/rafamadriz/friendly-snippets
 --
--- vim.pack.add { gh 'rafamadriz/friendly-snippets' }
--- require('luasnip.loaders.from_vscode').lazy_load()
+vim.pack.add({ utils.gh("rafamadriz/friendly-snippets") })
+require("luasnip.loaders.from_vscode").lazy_load()
 
 -- [[ Autocomplete Engine ]]
 vim.pack.add({ { src = utils.gh("saghen/blink.cmp"), version = vim.version.range("1.*") } })
@@ -100,9 +100,9 @@ require("blink.cmp").setup({
   -- Shows a signature help window while you type arguments for a function
   signature = {
     enabled = true,
-    trigger = {
-      show_on_trigger_character = false,
-      show_on_insert_on_trigger_character = false,
-    },
+    -- trigger = {
+    --   show_on_trigger_character = false,
+    --   show_on_insert_on_trigger_character = false,
+    -- },
   },
 })
