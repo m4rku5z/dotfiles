@@ -113,18 +113,46 @@ export PATH="$HOME/.local/bin:$PATH"
 #Mason
 export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 
-# Use the Homebrew LLVM instead of Apple's default
+{{ if .is_mac -}}
+# ------------------------------------------------------------------------------
+# macOS (Apple Silicon / Homebrew)
+# ------------------------------------------------------------------------------
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# LLVM via Homebrew
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 
 # Go path
 export PATH=$PATH:/Users/marcusphan/go/bin
 
-# Help compilers find the LLVM libraries and headers
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+# Makefile global
+alias make="make -f $HOME/.makeflags -f Makefile 2>/dev/null || make -f $HOME/.makeflags"
 
-export UV_PYTHON_PREFERENCE=only-managed
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Custom completion for jg lc-cpp
+_jg_lc_cpp_completion() {
+    local words
+    # Check if we are completing the second argument for 'lc-cpp'
+    if [[ $words[2] == "lc-cpp" ]]; then
+        # Find all .cpp files, strip the path and extension, and suggest them
+        compadd $(basename -a -s .cpp *.cpp 2>/dev/null)
+    fi
+}
+
+# Tell Zsh to use this completion when typing the 'jg' command
+compdef _jg_lc_cpp_completion jg
+# Just instead of Make
+alias jg="just --justfile ~/.user.justfile --working-directory ."
+
+{{ else if .is_wsl -}}
+# ------------------------------------------------------------------------------
+# Arch Linux (WSL)
+# ------------------------------------------------------------------------------
+# Add any Arch / WSL specific environment variables or aliases here
+# alias pac="sudo pacman -S"
+{{ end -}}
+
 eval "$(fnm env --use-on-cd --shell zsh)"
 
 # eza - ls
@@ -156,21 +184,3 @@ source <(fzf --zsh)
 
 # starship
 eval "$(starship init zsh)"
-
-# Makefile global
-alias make="make -f $HOME/.makeflags -f Makefile 2>/dev/null || make -f $HOME/.makeflags"
-
-# Custom completion for jg lc-cpp
-_jg_lc_cpp_completion() {
-    local words
-    # Check if we are completing the second argument for 'lc-cpp'
-    if [[ $words[2] == "lc-cpp" ]]; then
-        # Find all .cpp files, strip the path and extension, and suggest them
-        compadd $(basename -a -s .cpp *.cpp 2>/dev/null)
-    fi
-}
-
-# Tell Zsh to use this completion when typing the 'jg' command
-compdef _jg_lc_cpp_completion jg
-# Just instead of Make
-alias jg="just --justfile ~/.user.justfile --working-directory ."
