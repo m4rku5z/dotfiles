@@ -1,0 +1,39 @@
+[user]
+{{- if eq .machine_type "work" }}
+	name = Marcus Phan
+	email = marcus.phan@leap.com.au
+{{- else }}
+	name = MarcusPhan
+	email = marcusphan2512@gmail.com
+{{- end }}
+
+[core]
+    pager = delta
+    editor = nvim
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    dark = true      # or light = true, or omit for auto-detection
+    side-by-side = true
+    line-numbers = true
+    hyperlinks = true
+
+[merge]
+    conflictStyle = zdiff3
+
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+
+[includeIf "gitdir:~/personal-prj/"]
+	path = ~/.gitconfig-personal
+[includeIf "gitdir:~/dotfiles/"]
+	path = ~/.gitconfig-personal
+[includeIf "gitdir:~/.local/share/chezmoi/"]
+	path = ~/.gitconfig-personal
