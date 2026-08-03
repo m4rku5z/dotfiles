@@ -2,6 +2,7 @@
 {{- if eq .machine_type "work" }}
 	name = Marcus Phan
 	email = marcus.phan@leap.com.au
+	signingkey = ~/.ssh/id_rsa.pub
 {{- else }}
 	name = MarcusPhan
 	email = marcusphan2512@gmail.com
@@ -37,3 +38,10 @@
 	path = ~/.gitconfig-personal
 [includeIf "gitdir:~/.local/share/chezmoi/"]
 	path = ~/.gitconfig-personal
+
+{{- if eq .machine_type "work" }}
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
+{{- end }}
