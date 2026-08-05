@@ -179,8 +179,11 @@ alias fh="fd --hidden"
 alias ft="fd --type f"
 alias fdn="fd --type d"
 
-# fzf
-source <(fzf --zsh)
+# fzf (^T files, Alt+C cd; ^R disabled — atuin owns history)
+FZF_CTRL_R_COMMAND= source <(fzf --zsh)
+
+# atuin - Ctrl+R history
+eval "$(atuin init zsh --disable-up-arrow)"
 
 # starship
 eval "$(starship init zsh)"
