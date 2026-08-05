@@ -1,0 +1,14 @@
+{{- $is_mac := eq .chezmoi.os "darwin" -}}
+{{- $is_wsl := and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+data:
+  is_mac: {{ $is_mac }}
+  is_wsl: {{ $is_wsl }}
+{{- if $is_mac }}
+  # Your current Mac-specific config goes here
+  machine_type: personal
+{{- else if $is_wsl }}
+  machine_type: work
+{{- end }}
+
+diff:
+  pager: delta

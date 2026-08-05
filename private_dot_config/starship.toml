@@ -1,0 +1,38 @@
+[profiles]
+claude-code = "$directory$git_branch$claude_model$claude_context$claude_cost"
+
+[claude_context]
+format = '[$gauge $percentage( $input_tokens/$output_tokens)]($style) '
+gauge_width = 10
+gauge_full_symbol = "▰"
+gauge_partial_symbol = "▰"
+gauge_empty_symbol = "▱"
+
+# Redefining display replaces stock thresholds (which hide the gauge <30%)
+[[claude_context.display]]
+threshold = 0
+style = "bold green"
+
+[[claude_context.display]]
+threshold = 60
+style = "bold yellow"
+
+[[claude_context.display]]
+threshold = 80
+style = "bold red"
+
+[claude_cost]
+format = '[$symbol(\$$cost)( +$lines_added/-$lines_removed)]($style) '
+
+# Stock hides cost <$1; threshold 0 makes it always visible
+[[claude_cost.display]]
+threshold = 0.0
+style = "bold green"
+
+[[claude_cost.display]]
+threshold = 1.0
+style = "bold yellow"
+
+[[claude_cost.display]]
+threshold = 5.0
+style = "bold red"
