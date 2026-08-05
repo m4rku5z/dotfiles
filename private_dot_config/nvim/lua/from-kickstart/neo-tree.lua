@@ -15,6 +15,7 @@ require("neo-tree").setup({
   close_if_last_window = true,
   filesystem = {
     window = {
+      position = "right",
       mappings = {
         ["\\"] = "close_window",
       },
