@@ -20,6 +20,9 @@ require("nvim-treesitter").install(parsers)
 ---@param buf integer
 ---@param language string
 local function treesitter_try_attach(buf, language)
+  if language == "latex" then
+    return
+  end
   -- Check if a parser exists and load it
   if not vim.treesitter.language.add(language) then
     return
@@ -49,6 +52,10 @@ vim.api.nvim_create_autocmd("FileType", {
 
     local language = vim.treesitter.language.get_lang(filetype)
     if not language then
+      return
+    end
+
+    if language == "latex" then
       return
     end
 
