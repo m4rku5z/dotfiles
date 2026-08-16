@@ -16,6 +16,7 @@ require("conform").setup({
       go = true,
       c = true,
       cpp = true,
+      tex = true,
     }
     if enabled_filetypes[vim.bo[bufnr].filetype] then
       return { timeout_ms = 500 }
@@ -45,6 +46,7 @@ require("conform").setup({
     c = { "clang-format" },
     cpp = { "clang-format" },
     lua = { "stylua" },
+    tex = { "latexindent" },
     --
     -- You can use 'stop_after_first' to run the first available formatter from the list
     -- javascript = { "prettierd", "prettier", stop_after_first = true },

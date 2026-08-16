@@ -17,6 +17,15 @@
 --  To update plugins, run
 --    :lua vim.pack.update()
 --
+-- Inspect plugin state and check updates offline
+vim.keymap.set("n", "<leader>pi", function()
+  vim.pack.update(nil, { offline = true })
+end, { desc = "Plugins: Inspect state" })
+
+-- Update plugins
+vim.keymap.set("n", "<leader>pu", function()
+  vim.pack.update()
+end, { desc = "Plugins: Update" })
 --
 --  Throughout the rest of the config there will be examples
 --  of how to install and configure plugins using `vim.pack`.

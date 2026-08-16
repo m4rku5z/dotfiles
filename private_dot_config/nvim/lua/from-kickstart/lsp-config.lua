@@ -131,6 +131,9 @@ local servers = {
 
   -- INFO: Go
   gopls = require("lsp.go.gopls"),
+
+  -- INFO: Latex
+  texlab = {},
 }
 
 vim.pack.add({

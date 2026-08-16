@@ -16,6 +16,7 @@ require("from-kickstart.gitsigns")
 require("from-kickstart.lint")
 
 require("plugins.lazygit")
+require("plugins.vimtex")
 --[[
 
 =====================================================================
