@@ -72,19 +72,12 @@ ZSH_THEME=""
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-  zsh-syntax-highlighting
-  zsh-autosuggestions
   colored-man-pages
 )
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -93,63 +86,64 @@ else
   export EDITOR='nvim'
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
+export XDG_CONFIG_HOME="$HOME/.config"
 export PATH="$HOME/.local/bin:$PATH"
 
-#Mason
+# Mason (nvim LSP binaries)
 export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 
 {{ if .is_mac -}}
 # ------------------------------------------------------------------------------
-# macOS (Apple Silicon / Homebrew)
+# macOS (Apple Silicon / Homebrew) - all Macs
 # ------------------------------------------------------------------------------
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# zsh plugins installed via Homebrew (not OMZ custom plugins)
+[[ -f "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+  source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+{{ if eq .machine_type "personal" -}}
+# ------------------------------------------------------------------------------
+# Personal Mac only
+# ------------------------------------------------------------------------------
 # LLVM via Homebrew
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+if [[ -d /opt/homebrew/opt/llvm ]]; then
+  export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+  export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+fi
 
-# Go path
-export PATH=$PATH:/Users/marcusphan/go/bin
+# Go
+[[ -d "$HOME/go/bin" ]] && export PATH="$PATH:$HOME/go/bin"
 
-# BasicTex path
-export PATH="/Library/TeX/texbin:$PATH"
-
-
-export XDG_CONFIG_HOME="$HOME/.config"
+# BasicTeX
+[[ -d /Library/TeX/texbin ]] && export PATH="/Library/TeX/texbin:$PATH"
 
 # Makefile global
-alias make="make -f $HOME/.makeflags -f Makefile 2>/dev/null || make -f $HOME/.makeflags"
+[[ -f "$HOME/.makeflags" ]] && \
+  alias make="make -f $HOME/.makeflags -f Makefile 2>/dev/null || make -f $HOME/.makeflags"
 
-# Custom completion for jg lc-cpp
-_jg_lc_cpp_completion() {
-    local words
-    # Check if we are completing the second argument for 'lc-cpp'
-    if [[ $words[2] == "lc-cpp" ]]; then
-        # Find all .cpp files, strip the path and extension, and suggest them
-        compadd $(basename -a -s .cpp *.cpp 2>/dev/null)
-    fi
-}
-
-# Tell Zsh to use this completion when typing the 'jg' command
-compdef _jg_lc_cpp_completion jg
 # Just instead of Make
-alias jg="just --justfile ~/.user.justfile --working-directory ."
+if command -v just >/dev/null && [[ -f "$HOME/.user.justfile" ]]; then
+  alias jg="just --justfile ~/.user.justfile --working-directory ."
+
+  # Custom completion for jg lc-cpp
+  _jg_lc_cpp_completion() {
+    local words
+    if [[ $words[2] == "lc-cpp" ]]; then
+      compadd $(basename -a -s .cpp *.cpp 2>/dev/null)
+    fi
+  }
+  compdef _jg_lc_cpp_completion jg
+fi
+{{ else -}}
+# ------------------------------------------------------------------------------
+# Work Mac only
+# ------------------------------------------------------------------------------
+# Work-specific env / aliases go here
+{{ end -}}
 
 {{ else if .is_wsl -}}
 # ------------------------------------------------------------------------------
@@ -159,37 +153,51 @@ alias jg="just --justfile ~/.user.justfile --working-directory ."
 # alias pac="sudo pacman -S"
 {{ end -}}
 
-eval "$(fnm env --use-on-cd --shell zsh)"
+# ------------------------------------------------------------------------------
+# CLI tools - every block is guarded so a machine missing a tool still works
+# ------------------------------------------------------------------------------
+
+# fnm - node version manager
+command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
 
 # eza - ls
-alias ls="eza"
-alias ll="eza -lah"
-alias la="eza -a"
-alias lt="eza --tree"
+if command -v eza >/dev/null; then
+  alias ls="eza"
+  alias ll="eza -lah"
+  alias la="eza -a"
+  alias lt="eza --tree"
+else
+  alias ll="ls -lah"
+  alias la="ls -a"
+fi
 
 # bat - cat
-alias b="bat"
-alias bl="bat -l"
-alias bp="bat --paging=always"
-alias bn="bat --paging=never"
+if command -v bat >/dev/null; then
+  alias b="bat"
+  alias bl="bat -l"
+  alias bp="bat --paging=always"
+  alias bn="bat --paging=never"
+fi
 
 # lazygit - git
-alias lg="lazygit"
+command -v lazygit >/dev/null && alias lg="lazygit"
 
 # zoxide - cd
-eval "$(zoxide init zsh)"
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 
 # fd - find
-alias f="fd"
-alias fh="fd --hidden"
-alias ft="fd --type f"
-alias fdn="fd --type d"
+if command -v fd >/dev/null; then
+  alias f="fd"
+  alias fh="fd --hidden"
+  alias ft="fd --type f"
+  alias fdn="fd --type d"
+fi
 
-# fzf (^T files, Alt+C cd; ^R disabled — atuin owns history)
-FZF_CTRL_R_COMMAND= source <(fzf --zsh)
+# fzf (^T files, Alt+C cd; ^R disabled - atuin owns history)
+command -v fzf >/dev/null && FZF_CTRL_R_COMMAND= source <(fzf --zsh)
 
 # atuin - Ctrl+R history
-eval "$(atuin init zsh --disable-up-arrow)"
+command -v atuin >/dev/null && eval "$(atuin init zsh --disable-up-arrow)"
 
 # starship
-eval "$(starship init zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
