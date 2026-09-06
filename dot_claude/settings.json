@@ -1,8 +1,12 @@
 {
-  "theme": "dark",
+  "permissions": {
+    "defaultMode": "plan"
+  },
   "model": "claude-fable-5-1[1m]",
   "statusLine": {
     "type": "command",
     "command": "starship statusline claude-code"
-  }
+  },
+  "theme": "dark",
+  "editorMode": "vim"
 }
