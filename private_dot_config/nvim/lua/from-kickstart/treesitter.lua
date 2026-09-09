@@ -1,5 +1,15 @@
 local utils = require("utils")
 
+-- The `main` branch of nvim-treesitter compiles every parser with the
+-- tree-sitter CLI. Without it, every install silently fails and no
+-- highlighting works. Warn loudly so this is obvious.
+if vim.fn.executable("tree-sitter") == 0 then
+  vim.notify(
+    "nvim-treesitter: `tree-sitter` CLI not found. Parsers cannot be built.\nInstall it with `brew install tree-sitter-cli`.",
+    vim.log.levels.WARN
+  )
+end
+
 -- ============================================================
 -- SECTION 9: TREESITTER
 -- Parser installation, syntax highlighting, folds, indentation
@@ -23,6 +33,10 @@ local function treesitter_try_attach(buf, language)
   if language == "latex" then
     return
   end
+  -- Buffer may have been closed while an async parser install was running
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return
+  end
   -- Check if a parser exists and load it
   if not vim.treesitter.language.add(language) then
     return
@@ -41,7 +55,7 @@ local function treesitter_try_attach(buf, language)
 
   -- Enable treesitter based indentation
   if has_indent_query then
-    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
   end
 end
 
