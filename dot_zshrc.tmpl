@@ -157,24 +157,9 @@ fi
 # CLI tools - every block is guarded so a machine missing a tool still works
 # ------------------------------------------------------------------------------
 
-# fnm - node version manager
-command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
-
-# pnpm
-if [[ -d "$HOME/Library/pnpm" ]]; then
-  export PNPM_HOME="$HOME/Library/pnpm"
-  case ":$PATH:" in
-    *":$PNPM_HOME/bin:"*) ;;
-    *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-  esac
-fi
-
-# bun
-if [[ -d "$HOME/.bun" ]]; then
-  export BUN_INSTALL="$HOME/.bun"
-  export PATH="$BUN_INSTALL/bin:$PATH"
-  [[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
-fi
+# pnpm globals dir (pnpm binary itself comes from mise)
+export PNPM_HOME="$HOME/Library/pnpm"
+[[ -d "$PNPM_HOME/bin" ]] && export PATH="$PNPM_HOME/bin:$PATH"
 
 # eza - ls
 if command -v eza >/dev/null; then

@@ -11,6 +11,15 @@ ruff = "latest"
 "ubi:facebook/pyrefly" = "latest"
 "ubi:latex-lsp/texlab" = "latest"
 
+# runtimes and package managers (replaces fnm, bun/pnpm installers, standalone uv)
+node = "24"
+bun = "latest"
+pnpm = "latest"
+uv = "latest"
+python = "3.14"
+
 [settings]
 # required for the go: backend
 experimental = true
+# honour .nvmrc / .python-version in projects, like fnm did
+idiomatic_version_file_enable_tools = ["node", "python"]
