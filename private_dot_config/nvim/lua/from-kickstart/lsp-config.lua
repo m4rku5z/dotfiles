@@ -2,7 +2,7 @@ local utils = require("utils")
 
 -- ============================================================
 -- SECTION 6: LSP
--- LSP keymaps, server configuration, Mason tools installations
+-- LSP keymaps and server configuration (binaries via mise)
 -- ============================================================
 
 -- [[ LSP Configuration ]]
@@ -26,7 +26,7 @@ local utils = require("utils")
 --  - and more!
 --
 -- Thus, Language Servers are external tools that must be installed separately from
--- Neovim. This is where `mason` and related plugins come into play.
+-- Neovim. In this config they are installed by mise, not by Neovim.
 --
 -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
 -- and elegantly composed help section, `:help lsp-vs-treesitter`
@@ -106,7 +106,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
+--  Feel free to add/remove any LSPs that you want here.
+--  Binaries are provided by mise (see ~/.config/mise/config.toml), not installed by nvim.
 --  See `:help lsp-config` for information about keys and how to configure
 ---@type table<string, vim.lsp.Config>
 local servers = {
@@ -136,35 +137,13 @@ local servers = {
   texlab = {},
 }
 
-vim.pack.add({
-  utils.gh("neovim/nvim-lspconfig"),
-  utils.gh("mason-org/mason.nvim"),
-  utils.gh("mason-org/mason-lspconfig.nvim"),
-  utils.gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
-})
-
--- Automatically install LSPs and related tools to stdpath for Neovim
-require("mason").setup({})
-
--- Ensure the servers and tools above are installed
---
--- To check the current status of installed tools and/or manually install
--- other tools, you can run
---    :Mason
---
--- You can press `g?` for help in this menu.
-local ensure_installed = vim.tbl_keys(servers or {})
-vim.list_extend(ensure_installed, {
-  -- You can add other tools here that you want Mason to install
-})
-
-require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+vim.pack.add({ utils.gh("neovim/nvim-lspconfig") })
 
 for name, server in pairs(servers) do
   vim.lsp.config(name, server)
   vim.lsp.enable(name)
 end
 
--- For lsp installed on machines, not through Mason
+-- clangd comes from the system toolchain (Xcode / LLVM), not mise
 vim.lsp.config("clangd", require("lsp.cpp.clangd"))
 vim.lsp.enable("clangd")
