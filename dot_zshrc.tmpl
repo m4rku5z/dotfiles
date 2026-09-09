@@ -89,8 +89,8 @@ fi
 export XDG_CONFIG_HOME="$HOME/.config"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Mason (nvim LSP binaries)
-export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
+# mise - runtimes and dev tools (provides nvim LSP binaries, replaces Mason)
+command -v mise >/dev/null && eval "$(mise activate zsh)"
 
 {{ if .is_mac -}}
 # ------------------------------------------------------------------------------

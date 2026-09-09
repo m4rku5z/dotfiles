@@ -1,0 +1,16 @@
+# Global dev toolchain, managed by mise. Replaces Mason for nvim LSP binaries.
+[tools]
+go = "1.27"
+"go:golang.org/x/tools/gopls" = "latest"
+"go:golang.org/x/tools/cmd/goimports" = "latest"
+gofumpt = "latest"
+golangci-lint = "latest"
+lua-language-server = "latest"
+stylua = "latest"
+ruff = "latest"
+"ubi:facebook/pyrefly" = "latest"
+"ubi:latex-lsp/texlab" = "latest"
+
+[settings]
+# required for the go: backend
+experimental = true
