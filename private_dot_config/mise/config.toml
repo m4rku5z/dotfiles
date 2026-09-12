@@ -8,8 +8,8 @@ golangci-lint = "latest"
 lua-language-server = "latest"
 stylua = "latest"
 ruff = "latest"
-"ubi:facebook/pyrefly" = "latest"
-"ubi:latex-lsp/texlab" = "latest"
+"github:facebook/pyrefly" = "latest"
+"github:latex-lsp/texlab" = "latest"
 
 # runtimes and package managers (replaces fnm, bun/pnpm installers, standalone uv)
 node = "24"
